@@ -8,6 +8,7 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, "index.html"),
         triangle: resolve(__dirname, "triangle/index.html"),
+        cube: resolve(__dirname, "cube/index.html"),
       },
     },
   },
