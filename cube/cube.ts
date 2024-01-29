@@ -98,6 +98,8 @@ function drawScene(
 ) {
   // The larger cube
   {
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
     // --- Transformation Matrix Uniform Buffer
     const matrix = mat4.create();
     mat4.rotateY(matrix, matrix, rotateY);
