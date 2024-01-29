@@ -31,12 +31,6 @@ gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 // Face culling
 gl.enable(gl.CULL_FACE);
 
-gl.enableVertexAttribArray(0);
-const buffer = gl.createBuffer();
-gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0.0]), gl.STATIC_DRAW);
-gl.vertexAttribPointer(0, 1, gl.FLOAT, false, 0, 0);
-
 const program = compileProgram(gl, vertexSharderSource, fragmentSharderSource);
 gl.useProgram(program);
 
