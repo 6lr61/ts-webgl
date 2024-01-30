@@ -26,6 +26,7 @@ if (!gl) {
 
 // Setup the viewport and clear screen
 gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+const aspectRatio = gl.drawingBufferWidth / gl.drawingBufferHeight;
 gl.clearColor(0.0, 0.1, 0.0, 1.0);
 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -96,15 +97,29 @@ function drawScene(
   rotateX: number,
   rotateY: number
 ) {
+  const view = mat4.create();
+  mat4.ortho(
+    view,
+    -gl.drawingBufferWidth / 2,
+    gl.drawingBufferWidth / 2,
+    -gl.drawingBufferHeight / 2,
+    gl.drawingBufferHeight / 2,
+    -600,
+    600
+  );
+
   // The larger cube
   {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     // --- Transformation Matrix Uniform Buffer
     const matrix = mat4.create();
+    mat4.translate(matrix, matrix, vec3.fromValues(0, 0, 200));
+    mat4.scale(matrix, matrix, vec3.fromValues(400, 400, 400));
     mat4.rotateY(matrix, matrix, rotateY);
     mat4.rotateX(matrix, matrix, rotateX);
-    mat4.scale(matrix, matrix, vec3.fromValues(0.5, 0.5, 0.5));
+
+    mat4.multiply(matrix, view, matrix);
 
     const inverse = mat4.create();
     mat4.copy(inverse, matrix);
@@ -130,10 +145,12 @@ function drawScene(
   {
     // --- Transformation Matrix Uniform Buffer
     const matrix = mat4.create();
-    mat4.translate(matrix, matrix, vec3.fromValues(-1 / 2, 1 / 2, 1 / 2));
+    mat4.translate(matrix, matrix, vec3.fromValues(-200, 200, 0));
+    mat4.scale(matrix, matrix, vec3.fromValues(200, 200, 200));
     mat4.rotateY(matrix, matrix, rotateY);
     mat4.rotateX(matrix, matrix, rotateX);
-    mat4.scale(matrix, matrix, vec3.fromValues(0.3, 0.3, 0.3));
+
+    mat4.multiply(matrix, view, matrix);
 
     const inverse = mat4.create();
     mat4.copy(inverse, matrix);
