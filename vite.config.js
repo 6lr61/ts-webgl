@@ -9,6 +9,7 @@ export default defineConfig({
         main: resolve(__dirname, "index.html"),
         triangle: resolve(__dirname, "triangle/index.html"),
         cube: resolve(__dirname, "cube/index.html"),
+        pointLight: resolve(__dirname, "point-light/index.html"),
       },
     },
   },
