@@ -100,6 +100,10 @@ const lightWorldPositionLocation = gl.getUniformLocation(
   program,
   "u_lightWorldPosition"
 );
+const viewWorldPositionLocation = gl.getUniformLocation(
+  program,
+  "u_viewWorldPosition"
+);
 const worldLocation = gl.getUniformLocation(program, "u_world");
 
 drawScene(gl, 0, 0);
@@ -116,12 +120,15 @@ function drawScene(
     gl.drawingBufferWidth / 2,
     -gl.drawingBufferHeight / 2,
     gl.drawingBufferHeight / 2,
-    -600,
-    600
+    -1000,
+    1000
   );
 
   // set the light position
-  gl.uniform3fv(lightWorldPositionLocation, [-2.0, 2.0, -2.0]);
+  gl.uniform3fv(lightWorldPositionLocation, [-200, 200, 200]);
+
+  // set the camera/view position
+  gl.uniform3fv(viewWorldPositionLocation, [0, 0, 1000]);
 
   // Set the color to use
   gl.uniform4fv(colorLocation, [0.2, 1, 0.2, 1]); // green
@@ -132,12 +139,13 @@ function drawScene(
 
     // --- Transformation Matrix Uniform Buffer
     const worldMatrix = mat4.create();
-    mat4.translate(worldMatrix, worldMatrix, vec3.fromValues(0, 0, 0));
-    mat4.scale(worldMatrix, worldMatrix, vec3.fromValues(400, 400, 400));
+    mat4.translate(worldMatrix, worldMatrix, vec3.fromValues(0, 0, -200));
+    mat4.scale(worldMatrix, worldMatrix, vec3.fromValues(300, 300, 300));
     mat4.rotateY(worldMatrix, worldMatrix, rotateY);
     mat4.rotateX(worldMatrix, worldMatrix, rotateX);
 
-    mat4.multiply(worldMatrix, viewProjectionMatrix, worldMatrix);
+    const worldViewMatrix = mat4.create();
+    mat4.multiply(worldViewMatrix, viewProjectionMatrix, worldMatrix);
 
     const worldInverseTransposeMatrix = mat4.create();
     mat4.copy(worldInverseTransposeMatrix, worldMatrix);
@@ -145,13 +153,13 @@ function drawScene(
     mat4.transpose(worldInverseTransposeMatrix, worldInverseTransposeMatrix);
 
     // Set the matrix.
-    gl.uniformMatrix4fv(worldViewProjectionLocation, false, worldMatrix);
+    gl.uniformMatrix4fv(worldViewProjectionLocation, false, worldViewMatrix);
     gl.uniformMatrix4fv(
       worldInverseTransposeLocation,
       false,
       worldInverseTransposeMatrix
     );
-    gl.uniformMatrix4fv(worldLocation, false, viewProjectionMatrix);
+    gl.uniformMatrix4fv(worldLocation, false, worldMatrix);
   }
 
   {
