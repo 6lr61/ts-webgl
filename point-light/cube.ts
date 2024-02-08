@@ -96,6 +96,8 @@ const worldInverseTransposeLocation = gl.getUniformLocation(
   "u_worldInverseTranspose"
 );
 const colorLocation = gl.getUniformLocation(program, "u_color");
+const shininessLocation = gl.getUniformLocation(program, "u_shininess");
+
 const lightWorldPositionLocation = gl.getUniformLocation(
   program,
   "u_lightWorldPosition"
@@ -106,13 +108,13 @@ const viewWorldPositionLocation = gl.getUniformLocation(
 );
 const worldLocation = gl.getUniformLocation(program, "u_world");
 
-drawScene(gl, 0, 0);
+let rotateX = 0;
+let rotateY = 0;
+let shininess = 5;
 
-function drawScene(
-  gl: WebGL2RenderingContext,
-  rotateX: number,
-  rotateY: number
-) {
+drawScene(gl);
+
+function drawScene(gl: WebGL2RenderingContext) {
   const viewProjectionMatrix = mat4.create();
   mat4.ortho(
     viewProjectionMatrix,
@@ -125,7 +127,7 @@ function drawScene(
   );
 
   // set the light position
-  gl.uniform3fv(lightWorldPositionLocation, [-200, 200, 200]);
+  gl.uniform3fv(lightWorldPositionLocation, [-400, 400, 400]);
 
   // set the camera/view position
   gl.uniform3fv(viewWorldPositionLocation, [0, 0, 1000]);
@@ -160,6 +162,9 @@ function drawScene(
       worldInverseTransposeMatrix
     );
     gl.uniformMatrix4fv(worldLocation, false, worldMatrix);
+
+    // set the shininess
+    gl.uniform1f(shininessLocation, shininess);
   }
 
   {
@@ -183,9 +188,21 @@ canvas.addEventListener("mousemove", (event: MouseEvent) => {
 
     // The movement should be between -Math.PI and Math.PI
     // and X and Y are normalized coordinates
-    const rotateY = Math.PI * (x * 2 - 1);
-    const rotateX = Math.PI * (y * 2 - 1);
+    rotateY = Math.PI * (x * 2 - 1);
+    rotateX = Math.PI * (y * 2 - 1);
+
     console.log("Rotate X:", rotateX, "Rotate Y:", rotateY);
-    drawScene(gl, rotateX, rotateY);
+    drawScene(gl);
   }
 });
+
+const slider = document.querySelector("#shine");
+if (slider && slider instanceof HTMLInputElement) {
+  slider.value = shininess.toString();
+  slider.addEventListener("input", (event: Event) => {
+    if (event.target instanceof HTMLInputElement) {
+      shininess = Number(event.target.value);
+      drawScene(gl);
+    }
+  });
+}

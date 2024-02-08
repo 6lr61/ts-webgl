@@ -6,6 +6,7 @@ varying vec3 v_surfaceToLight;
 varying vec3 v_surfaceToView;
 
 uniform vec4 u_color;
+uniform float u_shininess;
 
 void main() {
   // because v_normal is a varying it's interpolated
@@ -18,7 +19,10 @@ void main() {
   vec3 halfVector = normalize(surfaceToLightDirection + surfaceToViewDirection);
 
   float light = dot(normal, surfaceToLightDirection);
-  float specular = dot(normal, halfVector);
+  float specular = 0.0;
+  if (light > 0.0) {
+    specular = pow(dot(normal, halfVector), u_shininess);
+  }
 
   // gl_FragColor = u_color;
   gl_FragColor = vec4(0.5 * normal + 0.5, 1);
