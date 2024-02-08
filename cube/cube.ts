@@ -2,7 +2,7 @@ import { mat4, vec3 } from "gl-matrix";
 import { compileProgram, resizeCanvasToDisplaySize } from "../src/webgl.ts";
 import vertexSharderSource from "./shader.vert";
 import fragmentSharderSource from "./shader.frag";
-import { cube } from "../src/cube.ts";
+import { cube } from "../src/cube-model.ts";
 
 /*
   Canvas Setup
